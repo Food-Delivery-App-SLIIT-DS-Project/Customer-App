@@ -1,18 +1,19 @@
 export interface Restaurant {
-    id: string;
-    name: string;
-    description: string;
-    cuisine: string;
-    rating: number;
-    deliveryTime: string;
-    image: string;
-    menuCategories: MenuCategory[];
-  }
+  id: string | number;  // Allow both string and number
+  name: string;
+  description: string;
+  image?: string;  // Make optional
+  imageUrl?: string; // Add alternative property
+  cuisine?: string;
+  rating?: number;
+  deliveryTime?: string;
+  menuCategories?: MenuCategory[];
+}
   
   export interface MenuCategory {
     id: string;
     name: string;
-    items: MenuItem[];
+    items?: MenuItem[];
   }
   
   export interface MenuItem {

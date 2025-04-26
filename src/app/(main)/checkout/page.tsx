@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { orderApi } from '@/lib/api';
 import PaymentMethod from '@/components/checkout/PaymentMethod';
 import DeliveryAddress from '@/components/checkout/DeliveryAddress';
 import OrderSummary from '@/components/cart/CartSummary';
@@ -10,11 +9,13 @@ import { useCart } from '@/context/CartContext';
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, clearCart } = useCart();
+  const { cart, clearCart } = useCart();
   const [address, setAddress] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  const items = cart.reduce((total, item) => total + item.quantity, 0);
 
   const handleSubmit = async () => {
     try {
@@ -32,7 +33,7 @@ export default function CheckoutPage() {
         paymentMethod,
       };
 
-      await orderApi.create(orderData);
+      // await orderApi.create(orderData);
       clearCart();
       router.push('/order-confirmation');
     } catch (err) {

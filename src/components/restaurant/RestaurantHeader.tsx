@@ -21,10 +21,10 @@ export default function RestaurantHeader({ restaurant }: { restaurant: Restauran
             <div className="flex items-center space-x-4">
               <div className="flex items-center">
                 <span className="text-yellow-400">★</span>
-                <span className="ml-1">{restaurant.rating}</span>
+                {/* <span className="ml-1">{restaurant.rating}</span> */}
               </div>
               <span>•</span>
-              <span>{restaurant.deliveryTime} delivery</span>
+              {/* <span>{restaurant.deliveryTime} delivery</span> */}
             </div>
           </div>
         </div>
