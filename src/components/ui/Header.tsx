@@ -15,7 +15,7 @@ export default function Header() {
       <header className="w-full sticky top-0 z-50 bg-gray-100 dark:bg-black shadow-md">
         <div className="container mx-auto flex justify-between items-center px-6 py-4">
           <div className="text-lg font-bold">QuickGrubs</div>
-          <LoadingSpinner size="sm" />
+          <LoadingSpinner />
         </div>
       </header>
     );

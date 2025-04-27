@@ -21,7 +21,7 @@ export default function Home() {
   if (isCheckingAuth || isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <LoadingSpinner size="lg" />
+        <LoadingSpinner />
       </div>
     );
   }
@@ -37,24 +37,18 @@ export default function Home() {
         priority
       /> */}
       <h1 className="text-3xl font-bold">Welcome to QuickGrubs</h1>
-      <p className="text-gray-600 dark:text-gray-400 text-center max-w-xl">
+      <p className="text-gray-600 dark:text-gray-600 text-center max-w-xl">
         A modern food ordering app built with Next.js. Browse restaurants, add meals to your cart, and checkout smoothly.
       </p>
 
-      <div className="flex gap-4 mt-6">
-        <a
-          href="/menu"
-          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
-        >
-          View Menu
-        </a>
+      {/* <div className="flex gap-4 mt-6">
         <a
           href="/about"
-          className="border border-black px-6 py-2 rounded hover:bg-gray-100 dark:border-white dark:hover:bg-white/10"
+          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
         >
           Learn More
         </a>
-      </div>
+      </div> */}
     </div>
   );
 }

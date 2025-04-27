@@ -14,7 +14,7 @@ export default function Nav() {
     return (
       <nav className="w-full flex justify-between items-center px-6 py-4 bg-gray-100 dark:bg-black shadow-md">
         <div className="text-lg font-bold">QuickGrubs</div>
-        <LoadingSpinner size="sm" />
+        <LoadingSpinner />
       </nav>
     );
   }

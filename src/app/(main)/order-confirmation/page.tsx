@@ -1,6 +1,28 @@
-import Link from 'next/link';
+'use client';
 
-export default function OrderConfirmationPage() {
+import Link from 'next/link';
+import { useCart } from '@/context/CartContext';
+import { useEffect, useState } from 'react';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
+
+export default function OrderConfirmationPage(searchParams: { amount: any, address: any }) {
+  const { amount } = searchParams;
+  const { address } = searchParams;
+  const { cart, clearCart } = useCart();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    clearCart();
+    // saveOrder();
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return (
+      <LoadingSpinner />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full text-center">

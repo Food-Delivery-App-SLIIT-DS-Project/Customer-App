@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import LoadingSpinner from '../ui/LoadingSpinner';
+import { apiRequest } from '@/lib/api';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -17,10 +18,14 @@ export default function LoginForm() {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
-
     try {
-    //   await authApi.login({ email, password });
-      login('your-auth-token', 'gamithf');
+      // const response = await apiRequest('/auth/signin', 'POST', { email, password });
+      // if (response.status !== 200) {
+      //   throw new Error(response.message);
+      // }
+      // const data = response.data;
+
+      login('your-auth-token', 'username'); // Replace with actual token and username
       router.push('/home');
     } catch (err) {
       setError('Invalid email or password');
@@ -31,30 +36,32 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <form onSubmit={handleSubmit} className="w-full max-w-md p-8 space-y-6">
-        <h2 className="text-2xl font-bold">Login</h2>
-        
-        {/* Form fields */}
+        <h2 className="text-3xl font-extrabold text-center text-gray-900">
+          Login
+        </h2>
+        {error && (
+          <p className="text-red-500 text-center">{error}</p>
+        )}
         <div>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-            placeholder="Email"
-            required
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full p-2 border rounded"
+        placeholder="Email"
+        required
           />
         </div>
-        
         <div>
           <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded"
-            placeholder="Password"
-            required
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-full p-2 border rounded"
+        placeholder="Password"
+        required
           />
         </div>
         
@@ -64,11 +71,18 @@ export default function LoginForm() {
           className="w-full bg-green-500 text-white p-2 rounded flex justify-center items-center"
         >
           {isSubmitting ? (
-            <LoadingSpinner size="sm" />
+        <LoadingSpinner />
           ) : (
-            'Login'
+        'Login'
           )}
         </button>
+
+        <p className="text-center">
+          Don't have an account?{' '}
+          <a href="/register" className="text-blue-500 hover:underline">
+        Register
+          </a>
+        </p>
       </form>
     </div>
   );

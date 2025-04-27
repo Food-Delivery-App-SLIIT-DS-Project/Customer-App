@@ -14,7 +14,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 // Key for localStorage
-const CART_STORAGE_KEY = 'quickgrubs_cart';
+const CART_STORAGE_KEY = 'cart';
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);

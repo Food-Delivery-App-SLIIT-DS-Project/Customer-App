@@ -6,19 +6,27 @@ interface ApiResponse<T> {
   status: number;
 }
 
-// Generic fetch function
-export async function fetchApi<T>(
+export async function apiRequest<T>(
   url: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
   payload?: any,
   options?: RequestInit
 ): Promise<ApiResponse<T>> {
   const fullUrl = `${API_BASE_URL}${url}`;
+  const token = localStorage.getItem('token');
+  
+  if (!fullUrl) {
+    throw new Error('API base URL is not defined in environment variables');
+  }
+  if (!token) {
+    throw new Error('No token found in local storage');
+  }
 
   const response = await fetch(fullUrl, {
     method,
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
       ...options?.headers,
     },
     body: payload ? JSON.stringify(payload) : undefined,

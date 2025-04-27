@@ -2,6 +2,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type AuthContextType = {
   isLoggedIn: boolean;
@@ -17,6 +18,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(true); 
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -42,8 +44,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
+    localStorage.removeItem('cart');
     setIsLoggedIn(false);
     setUsername('');
+    router.push('/login'); 
   };
 
   return (

@@ -1,7 +1,11 @@
 // import { restaurantApi } from '@/lib/api';
+'use client';
 import RestaurantCard from '@/components/restaurant/RestaurantCard';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-export default async function HomePage() {
+export default function HomePage() {
   // const { data: restaurants } = await restaurantApi.getAll();
   const restaurants = [
     {
@@ -23,6 +27,14 @@ export default async function HomePage() {
       imageUrl: '/images/restaurant-c.jpg',
     },
   ];
+  const { isLoggedIn, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push('/login');
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100">
