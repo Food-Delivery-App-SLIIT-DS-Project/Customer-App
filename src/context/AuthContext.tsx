@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { setCookie, deleteCookie } from 'cookies-next';
 
 type AuthContextType = {
   isLoggedIn: boolean;
@@ -35,21 +36,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = (accessToken: string, refreshToken: string, user: Record<any, any>) => {
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
-    localStorage.setItem('userId', user.userId);
-    localStorage.setItem('username', user.fullName?.split(' ')[0] || 'User');
+    setCookie('accessToken', accessToken);
+    setCookie('refreshToken', refreshToken);
+    setCookie('userId', user.userId);
+    setCookie('username', user.fullName?.split(' ')[0] || 'User');
+
     setIsLoggedIn(true);
     setUserId(user.userId);
     setUsername(user.fullName?.split(' ')[0] || 'user');
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('username');
-    localStorage.removeItem('cart');
+    deleteCookie('accessToken');
+    deleteCookie('refreshToken');
+    deleteCookie('userId');
+    deleteCookie('username');
+    deleteCookie('cart');
+
     setIsLoggedIn(false);
     setUsername('');
     router.push('/login'); 

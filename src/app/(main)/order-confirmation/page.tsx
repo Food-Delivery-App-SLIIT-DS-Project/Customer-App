@@ -25,7 +25,6 @@ export default function OrderConfirmationPage(searchParams: { amount: any, addre
   }
 
   return (
-    <ProtectedRoute>
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -50,6 +49,5 @@ export default function OrderConfirmationPage(searchParams: { amount: any, addre
           </Link>
         </div>
       </div>
-    </ProtectedRoute>
   );
 }
