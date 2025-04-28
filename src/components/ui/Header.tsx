@@ -44,11 +44,12 @@ export default function Header() {
                 <NavLink href="/cart">
                   Cart
                   {cartItemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                    <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                     {cartItemCount}
                   </span>
                   )}
                 </NavLink>
+                <NavLink href="/orders">My Orders</NavLink>
               </>
             ) : (
               <NavLink href="/about">About</NavLink>

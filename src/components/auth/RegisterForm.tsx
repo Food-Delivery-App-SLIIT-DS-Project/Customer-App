@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiRequest } from '@/lib/api';
+import { apiRequest, authRequest } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 
 export default function RegisterForm() {
@@ -22,21 +22,20 @@ export default function RegisterForm() {
     setError('');
 
     try {
-      // const payLoad = {
-      //   "full_name": name,
-      //   "email": email,
-      //   "phone_number": phone,
-      //   "password": password,
-      //   "role": "customer",
-      //   "is_verified": "verified",
-      //   "address": address,
-      // };
-      // const response = await apiRequest('/auth/signup', 'POST', payLoad, );
-      // if (response.status !== 201) {
-      //   throw new Error(response.message);
-      // }
-      // const data = response.data;
-      login('your-auth-token', 'username'); // Replace with actual token and username
+      const payLoad = {
+        "fullName": name,
+        "email": email,
+        "phoneNumber": `+94${phone}`,
+        "password": password,
+        "role": "customer",
+        "isVerified": true,
+        "fcmToken": null,
+        // "address": address,
+      };
+      const response = await authRequest('/auth/signup', 'POST', payLoad );
+      const data = response.data as any;
+
+      login(data.token.access, data.token.refresh, data.user);
       router.push('/home');
     } catch (err) {
       setError('Registration failed. Please try again.');
@@ -85,16 +84,19 @@ export default function RegisterForm() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div>
+        <div className="relative">
           <label htmlFor="phone" className="sr-only">
             Phone Number
           </label>
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span className="text-gray-500 sm:text-sm">+94</span>
+          </div>
           <input
             id="phone"
             name="phone"
             type="tel"
             required
-            className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
+            className="appearance-none relative block w-full px-3 py-2 pl-12 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
             placeholder="Phone Number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}

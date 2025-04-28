@@ -1,4 +1,3 @@
-// context/AuthContext.tsx
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -7,8 +6,9 @@ import { useRouter } from 'next/navigation';
 type AuthContextType = {
   isLoggedIn: boolean;
   isLoading: boolean;
+  userId: string;
   username: string;
-  login: (token: string, username: string) => void;
+  login: (accessToken: string, refreshToken: string, user: Record<any, any>) => void;
   logout: () => void;
 };
 
@@ -16,33 +16,38 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState('');
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(true); 
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const accessToken = localStorage.getItem('accessToken');
+    const storedUserId = localStorage.getItem('userId');
     const storedUsername = localStorage.getItem('username');
-    const timer = setTimeout(() => {
-      if (token) {
-        setIsLoggedIn(true);
-        setUsername(storedUsername || '');
-      }
-      setIsLoading(false);
-    }, 500); // Small delay to show spinner
-    
-    return () => clearTimeout(timer);
+
+    if (accessToken && storedUserId) {
+      setIsLoggedIn(true);
+      setUserId(storedUserId);
+      setUsername(storedUsername || 'User');
+    }
+    setIsLoading(false);
   }, []);
 
-  const login = (token: string, username: string) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('username', username);
+  const login = (accessToken: string, refreshToken: string, user: Record<any, any>) => {
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('userId', user.userId);
+    localStorage.setItem('username', user.fullName?.split(' ')[0] || 'User');
     setIsLoggedIn(true);
-    setUsername(username);
+    setUserId(user.userId);
+    setUsername(user.fullName?.split(' ')[0] || 'user');
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
     localStorage.removeItem('username');
     localStorage.removeItem('cart');
     setIsLoggedIn(false);
@@ -51,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, isLoading, username, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, isLoading, userId, username, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

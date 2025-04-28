@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import LoadingSpinner from '../ui/LoadingSpinner';
-import { apiRequest } from '@/lib/api';
+import { apiRequest, authRequest } from '@/lib/api';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -19,13 +19,10 @@ export default function LoginForm() {
     setError('');
     setIsSubmitting(true);
     try {
-      // const response = await apiRequest('/auth/signin', 'POST', { email, password });
-      // if (response.status !== 200) {
-      //   throw new Error(response.message);
-      // }
-      // const data = response.data;
+      const response = await authRequest('/auth/signin', 'POST', { email: email, password: password, "fcmToken": null });
+      const data = response.data as any;
 
-      login('your-auth-token', 'username'); // Replace with actual token and username
+      login(data.token.access, data.token.refresh, data.user);
       router.push('/home');
     } catch (err) {
       setError('Invalid email or password');
