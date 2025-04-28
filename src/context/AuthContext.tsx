@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { setCookie, deleteCookie } from 'cookies-next';
+import { setCookie, deleteCookie, getCookie } from 'cookies-next';
 
 type AuthContextType = {
   isLoggedIn: boolean;
@@ -23,16 +23,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    const storedUserId = localStorage.getItem('userId');
-    const storedUsername = localStorage.getItem('username');
+    const checkAuth = async () => {
+      try {
+        // Await the cookie values
+        const accessToken = await getCookie('accessToken');
+        const storedUserId = await getCookie('userId');
+        const storedUsername = await getCookie('username');
 
-    if (accessToken && storedUserId) {
-      setIsLoggedIn(true);
-      setUserId(storedUserId);
-      setUsername(storedUsername || 'User');
-    }
-    setIsLoading(false);
+        if (accessToken && storedUserId) {
+          setIsLoggedIn(true);
+          setUserId(String(storedUserId));
+          setUsername(String(storedUsername));
+        }
+      } catch (error) {
+        console.error('Error checking auth:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
   }, []);
 
   const login = (accessToken: string, refreshToken: string, user: Record<any, any>) => {

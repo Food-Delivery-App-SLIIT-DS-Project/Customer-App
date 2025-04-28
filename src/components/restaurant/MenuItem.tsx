@@ -18,7 +18,7 @@ export default function MenuItem({
       <div className="flex-1">
         <h4 className="font-medium">{item.name}</h4>
         <p className="text-gray-600 text-sm mt-1">{item.description}</p>
-        <p className="text-green-600 font-medium mt-2">${item.price.toFixed(2)}</p>
+        <p className="text-green-600 font-medium mt-2">Rs.{item.price.toFixed(2)}</p>
       </div>
       
       {item.image && (

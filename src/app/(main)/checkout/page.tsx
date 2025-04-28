@@ -37,7 +37,7 @@ export default function CheckoutPage() {
       (total, item) => total + item.price * item.quantity,
       0
     );
-    const deliveryFee = subtotal > 0 ? 2.99 : 0; 
+    const deliveryFee = subtotal > 0 ? 100 : 0; 
     const tax = subtotal * 0.1;
     setAmount(subtotal + deliveryFee + tax);
   }, []);
@@ -60,9 +60,9 @@ export default function CheckoutPage() {
   };
 
   return (
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+          <h1 className="text-3xl font-bold mb-8 text-gray-50">Checkout</h1>
           
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -73,7 +73,9 @@ export default function CheckoutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h2 className="text-xl font-semibold mb-4">Delivery Address</h2>
+                <h2 className="text-xl font-semibold mb-4"><span className='text-red-600'>* </span>
+                  Delivery Address 
+                  </h2>
                 <DeliveryAddress 
                   address={address}
                   onChange={setAddress}

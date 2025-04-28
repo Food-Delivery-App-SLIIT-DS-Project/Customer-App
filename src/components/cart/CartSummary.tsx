@@ -29,24 +29,24 @@ export default function CartSummary() {
               </span>
             ))}
             </p>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>Rs.{subtotal.toFixed(2)}</span>
         </div>
         
         <div className="flex justify-between">
           <span className="text-gray-600">Delivery Fee</span>
-          <span>${deliveryFee.toFixed(2)}</span>
+          <span>Rs.{deliveryFee.toFixed(2)}</span>
         </div>
         
         <div className="flex justify-between">
           <span className="text-gray-600">Tax (10%)</span>
-          <span>${tax.toFixed(2)}</span>
+          <span>Rs.{tax.toFixed(2)}</span>
         </div>
       </div>
       
       <div className="border-t border-gray-200 pt-4 mb-6">
         <div className="flex justify-between font-semibold text-lg">
           <span>Total</span>
-          <span>${total.toFixed(2)}</span>
+          <span>Rs.{total.toFixed(2)}</span>
         </div>
       </div>
       

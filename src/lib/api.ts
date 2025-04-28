@@ -1,4 +1,5 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { getCookie } from 'cookies-next';
 
 interface ApiResponse<T> {
   data: T;
@@ -13,14 +14,14 @@ export async function apiRequest<T>(
   options?: RequestInit
 ): Promise<ApiResponse<T>> {
   const fullUrl = `${API_BASE_URL}${url}`;
-  const token = localStorage.getItem('token');
+  const token = await getCookie('accessToken');
   
   if (!fullUrl) {
     throw new Error('API base URL is not defined in environment variables');
   }
-  if (!token) {
-    throw new Error('No token found in local storage');
-  }
+  // if (!token) {
+  //   throw new Error('No token');
+  // }
 
   const response = await fetch(fullUrl, {
     method,

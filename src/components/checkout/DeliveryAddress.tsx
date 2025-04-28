@@ -11,7 +11,7 @@ export default function DeliveryAddress({
     <div>
       <div className="mb-4">
         <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-          Delivery Address
+          
         </label>
         <textarea
           id="address"

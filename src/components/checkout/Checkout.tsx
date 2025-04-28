@@ -81,13 +81,13 @@ export default function Checkout({ amount, address }: { amount: number; address:
     <form onSubmit={handleSubmit} className="bg-white p-2 rounded-md">
       {clientSecret && <PaymentElement />}
 
-      {errorMessage && <div>{errorMessage}</div>}
+      {errorMessage && <div className="text-red-500">{errorMessage}</div>}
 
       <button
         disabled={!stripe || loading}
         className="text-white w-full p-5 bg-black mt-2 rounded-md font-bold disabled:opacity-50 disabled:animate-pulse"
       >
-        {!loading ? `Pay $${amount}` : "Processing..."}
+        {!loading ? `Pay Rs.${amount.toFixed(2)}` : "Processing..."}
       </button>
     </form>
   );
