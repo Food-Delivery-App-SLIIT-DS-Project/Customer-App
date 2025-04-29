@@ -7,52 +7,65 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { apiRequest } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import { useSearchParams } from 'next/navigation';
 
-export default function OrderConfirmationPage(searchParams: { amount: any, address: any }) {
-  const { amount } = searchParams;
-  const { address } = searchParams;
+export default function OrderConfirmationPage() {
+  const searchParams = useSearchParams();
+  const amountParam = searchParams.get('amount');
+  const address = searchParams.get('address');
+  const transactionId = searchParams.get('payment_intent');
+  const amount = amountParam ? parseFloat(amountParam) : 0;
+  const { userId } = useAuth();
+
   const { cart, clearCart } = useCart();
   const [loading, setLoading] = useState(true);
-  const { isLoggedIn, isLoading, userId } = useAuth();
+  const [orderData, setOrderData] = useState(null);
 
   useEffect(() => {
     const saveOrder = async () => {
       try {
         const orderPayLoad = {
-          "customerId": 'c4f1b0a2-3d5e-4f8b-9c7d-6a0e5f3b8c1d',
-          "restaurantId": "92305ca1-7320-4912-9ab6-00e07dede74e",
-          "deliveryId": "22904014-be55-4fd4-9b0e-92960387b3c5",
+          "customerId": userId,
+          "restaurantId": "4207872f-4085-4b92-abac-9bf08e4738e6",
+          "deliveryId": "ce805d9f-12df-4720-8ec4-4ab138974b3a",
           "status": "PENDING",
           "totalPrice": amount,
           "items": [
             {
-              "menuId": "2242e344-fdcf-42c6-bb40-20638216da7f",
+              "menuId": "69d21b5d-e4c5-449f-b43d-63eae44d0f6b",
               "quantity": 10,
               "price": 1.4
             }
           ]
         };
         const orderResponse = await apiRequest('/order', 'POST', orderPayLoad);
-        const orderData = orderResponse.data as any;
+        const order = orderResponse.data as any;
+        setOrderData(order.data);
+        console.log('Order saved successfully: ', order);
         
-        // const paymentPayLoad = {
-        //   "orderId": orderData.id,
-        //   "customerId": orderData.customerId,
-        //   "amount": orderData.totalPrice,
-        //   "paymentMethod": "Stripe",
-        //   "transactionId": ""
-        // };
-        // const paymentResponse = await apiRequest('/payment', 'POST', paymentPayLoad);
-        // const paymentData = paymentResponse.data as any;
+        const paymentPayLoad = {
+          "orderId": order.data.orderId,
+          "customerId": order.data.customerId,
+          "amount": order.data.totalPrice,
+          "paymentMethod": "Stripe",
+          "status": "COMPLETED",
+          "transactionId": transactionId?.toString(),
+        };
+        const paymentResponse = await apiRequest('/payment', 'POST', paymentPayLoad);
+        const paymentData = paymentResponse.data as any;
+        console.log('Payment saved successfully: ', paymentData);
       } catch (error) {
         console.error('Error saving order and payment: ', error);
+      } finally {
+        clearCart();
+        setLoading(false);
       }
     };
 
-    saveOrder();
-    clearCart();
-    setLoading(false);
-  }, []);
+    if (userId && amount > 0 && transactionId) {
+      saveOrder();
+    }
+  }, [userId, amount]);
 
 
   if (loading) {
@@ -86,7 +99,7 @@ export default function OrderConfirmationPage(searchParams: { amount: any, addre
       <div className="bg-gray-50 dark:bg-gray-100 p-5 rounded-lg mb-8 space-y-3">
         <div className="flex justify-between">
           <span className="text-gray-600">Order #</span>
-          <span className="font-medium">12345</span>
+          <span className="font-medium">{orderData.orderId}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-gray-600">Estimated delivery</span>
@@ -94,7 +107,7 @@ export default function OrderConfirmationPage(searchParams: { amount: any, addre
         </div>
         <div className="flex justify-between">
           <span className="text-gray-600">Total</span>
-          <span className="font-medium text-indigo-600">Rs. 2,450.00</span>
+          <span className="font-medium text-indigo-600">Rs.{amount.toFixed(2)}</span>
         </div>
       </div>
       
@@ -118,10 +131,6 @@ export default function OrderConfirmationPage(searchParams: { amount: any, addre
           Back to Home
         </Link>
       </div>
-
-      <p className="text-sm text-gray-500 mt-8">
-        We've sent the order details to your email at <span className="font-medium">user@example.com</span>
-      </p>
     </div>
   </div>
 );

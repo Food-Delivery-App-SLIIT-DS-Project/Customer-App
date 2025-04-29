@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // List of paths that need authentication
-// const protectedPaths = ['/home', 'restaurant', '/cart', '/checkout', '/order-confirmation', '/orders', '/profile'];
-const protectedPaths = ['/hee'];
+const protectedPaths = ['/home', 'restaurant', '/cart', '/checkout', '/order-confirmation', '/orders', '/profile'];
+// const protectedPaths = ['/hee'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
