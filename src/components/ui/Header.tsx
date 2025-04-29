@@ -32,7 +32,7 @@ export default function Header() {
               href="/home" 
               className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <LogoIcon className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
+              {/* <LogoIcon className="h-7 w-7 text-indigo-600 dark:text-indigo-400" /> */}
               <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 QuickGrubs
               </span>

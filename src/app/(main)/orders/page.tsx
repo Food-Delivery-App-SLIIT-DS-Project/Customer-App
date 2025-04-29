@@ -65,12 +65,20 @@ export default function OrdersPage() {
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <div className="mb-3 sm:mb-0">
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Order #{order.orderId}</h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Customer ID: {order.customerId}...</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Delivery ID: {order.deliveryId}...</p>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center space-x-2">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                     {order.status}
                   </span>
+                  {order.status === 'OUT_FOR_DELIVERY' && (
+                    <button
+                      className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 hover:bg-green-200 transition-colors"
+                      onClick={() => window.location.href = '/track-order'}
+                    >
+                      Track Order
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -84,7 +92,6 @@ export default function OrdersPage() {
                       <span className="text-gray-600 dark:text-gray-400">{item.quantity} ×</span>
                       <span className="ml-2 font-medium text-gray-800 dark:text-gray-200">Menu Item (ID: {item.menuId}...)</span>
                     </div>
-                    <span className="text-gray-800 dark:text-gray-200">${(item.price / 100).toFixed(2)}</span>
                   </li>
                 ))}
               </ul>
@@ -92,16 +99,8 @@ export default function OrdersPage() {
 
             <div className="p-5 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
               <div className="flex justify-between items-center">
-                <div>
-                  {order.deliveryId && (
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Delivery: <span className="font-medium">{order.deliveryId}...</span>
-                    </p>
-                  )}
-                </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Total</p>
-                  <p className="text-lg font-bold text-gray-800 dark:text-gray-200">Rs.{(order.totalPrice).toFixed(2)}</p>
+                  <p className="text-lg font-bold text-gray-800 dark:text-gray-200">TOTAL: Rs.{(order.totalPrice).toFixed(2)}</p>
                 </div>
               </div>
             </div>

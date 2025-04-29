@@ -21,6 +21,9 @@ export default function OrderConfirmationPage() {
   const [loading, setLoading] = useState(true);
   const [orderData, setOrderData] = useState(null);
 
+  const customerCoords = { lat: 6.9271, lng: 79.8612 }; // example
+  const restaurantCoords = { lat: 6.9344, lng: 79.8428 }; // example
+
   useEffect(() => {
     const saveOrder = async () => {
       try {
