@@ -5,42 +5,67 @@ import RestaurantCard from '@/components/restaurant/RestaurantCard';
 import { useAuth } from '@/context/AuthContext';
 import { apiRequest } from '@/lib/api';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function HomePage() {
   const { isLoggedIn, isLoading } = useAuth();
   const router = useRouter();
+  const uniqueRestaurantsMap = new Map();
+  const [restaurants, setRestaurants] = useState([]);
   
-  async function fetchRestaurants() {
-    try {
-      const response = await apiRequest('/restaurants', 'GET');
-      const data = response.data;
-      console.log('Restaurants:', data);
-    } catch (error) {
-      console.error('Error fetching restaurants:', error);
-    } 
-  }
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const response = await apiRequest('/restaurant', 'GET');
+        if (response.data) {
+          response.data.data.forEach((r: any) => {
+            if (!r.restaurant_id || !r.restaurant_name) {
+              
+            }
+            else if (!uniqueRestaurantsMap.has(r.restaurant_id)) {
+              uniqueRestaurantsMap.set(r.restaurant_id, {
+                id: r.restaurant_id,
+                name: r.restaurant_name || 'Unnamed Restaurant',
+                description: r.description || 'No description available',
+                imageUrl: r.image_reference || '/restaurant-placeholder.jpg',
+                cuisine: r.cuisine_type,
+                isOpen: r.is_open,
+                rating: r.average_rating
+              });
+            }
+          });
+          const formattedRestaurants = Array.from(uniqueRestaurantsMap.values());
+          setRestaurants(formattedRestaurants);
+        }
+      } catch (error) {
+        console.error('Error fetching restaurants:', error);
+      } finally {
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
   
-  const restaurants = [
-    {
-      id: 1,
-      name: 'Restaurant A',
-      description: 'Delicious food from Restaurant A',
-      imageUrl: '/images/restaurant-a.jpg',
-    },
-    {
-      id: 2,
-      name: 'Restaurant B',
-      description: 'Tasty meals from Restaurant B',
-      imageUrl: '/images/restaurant-b.jpg',
-    },
-    {
-      id: 3,
-      name: 'Restaurant C',
-      description: 'Yummy dishes from Restaurant C',
-      imageUrl: '/images/restaurant-c.jpg',
-    },
-  ];
+  // const restaurants = [
+  //   {
+  //     id: 1,
+  //     name: 'Restaurant A',
+  //     description: 'Delicious food from Restaurant A',
+  //     imageUrl: '/images/restaurant-a.jpg',
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Restaurant B',
+  //     description: 'Tasty meals from Restaurant B',
+  //     imageUrl: '/images/restaurant-b.jpg',
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Restaurant C',
+  //     description: 'Yummy dishes from Restaurant C',
+  //     imageUrl: '/images/restaurant-c.jpg',
+  //   },
+  // ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">

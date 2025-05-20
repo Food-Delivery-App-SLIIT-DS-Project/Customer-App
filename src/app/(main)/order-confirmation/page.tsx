@@ -21,25 +21,27 @@ export default function OrderConfirmationPage() {
   const [loading, setLoading] = useState(true);
   const [orderData, setOrderData] = useState(null);
 
-  const customerCoords = { lat: 6.9271, lng: 79.8612 }; // example
-  const restaurantCoords = { lat: 6.9344, lng: 79.8428 }; // example
-
   useEffect(() => {
     const saveOrder = async () => {
       try {
+        const orderDetailsRaw = localStorage.getItem('cart');
+        const cartItems = JSON.parse(orderDetailsRaw);
+        console.log(cartItems);
+
+        const restaurantId = cartItems[0].restaurantId;
+        const items = cartItems.map(item => ({
+          menuId: item.id,
+          quantity: item.quantity,
+          price: item.price
+        }));
+
         const orderPayLoad = {
           "customerId": userId,
-          "restaurantId": "4207872f-4085-4b92-abac-9bf08e4738e6",
+          "restaurantId": restaurantId,
           "deliveryId": "ce805d9f-12df-4720-8ec4-4ab138974b3a",
           "status": "PENDING",
           "totalPrice": amount,
-          "items": [
-            {
-              "menuId": "69d21b5d-e4c5-449f-b43d-63eae44d0f6b",
-              "quantity": 10,
-              "price": 1.4
-            }
-          ]
+          "items": items
         };
         const orderResponse = await apiRequest('/order', 'POST', orderPayLoad);
         const order = orderResponse.data as any;
@@ -52,7 +54,7 @@ export default function OrderConfirmationPage() {
           "amount": order.data.totalPrice,
           "paymentMethod": "Stripe",
           "status": "COMPLETED",
-          "transactionId": transactionId?.toString(),
+          "transactionId": transactionId?.toString() + '_' + order.data.orderId,
         };
         const paymentResponse = await apiRequest('/payment', 'POST', paymentPayLoad);
         const paymentData = paymentResponse.data as any;

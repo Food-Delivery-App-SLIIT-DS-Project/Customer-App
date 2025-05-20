@@ -3,6 +3,9 @@ import Image from 'next/image';
 import { Restaurant } from '@/lib/types';
 
 export default function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
+  if (restaurant) {
+    console.log(restaurant);
+  }
   return (
     <Link href={`/restaurant/${restaurant.id}`}>
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group">

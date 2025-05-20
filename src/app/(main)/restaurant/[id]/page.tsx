@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { apiRequest } from '@/lib/api';
 
 
 export default function RestaurantPage() {
@@ -15,125 +16,214 @@ export default function RestaurantPage() {
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [isLoading, setLoading] = useState(true);
   const { cart, addItem, clearCart } = useCart();
+  const uniqueRestaurantsMap = new Map();
+  const [restaurants, setRestaurants] = useState([]);
   
   // Hard-coded restaurants with complete menus
-  const restaurants: Restaurant[] = [
-    {
-      id: 1,
-      name: 'Italian Bistro',
-      description: 'Authentic Italian cuisine with homemade pasta',
-      imageUrl: '/images/italian-restaurant.jpg',
-      menuItems: [
-        {
-          id: 101,
-          name: 'Margherita Pizza',
-          description: 'Tomato sauce, mozzarella, and basil',
-          price: 12.99,
-          category: 'Pizza'
-        },
-        {
-          id: 102,
-          name: 'Spaghetti Carbonara',
-          description: 'Pasta with eggs, cheese, pancetta, and pepper',
-          price: 14.99,
-          category: 'Pasta'
-        },
-        {
-          id: 103,
-          name: 'Tiramisu',
-          description: 'Classic Italian dessert with coffee flavor',
-          price: 7.99,
-          category: 'Desserts'
-        },
-        {
-          id: 104,
-          name: 'Bruschetta',
-          description: 'Toasted bread topped with tomatoes and garlic',
-          price: 6.99,
-          category: 'Appetizers'
-        }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Burger Joint',
-      description: 'Gourmet burgers and craft beers',
-      imageUrl: '/images/burger-restaurant.jpg',
-      menuItems: [
-        {
-          id: 201,
-          name: 'Classic Cheeseburger',
-          description: 'Beef patty with cheese, lettuce, and special sauce',
-          price: 9.99,
-          category: 'Burgers'
-        },
-        {
-          id: 202,
-          name: 'Bacon Burger',
-          description: 'Beef patty with bacon and cheddar cheese',
-          price: 11.99,
-          category: 'Burgers'
-        },
-        {
-          id: 203,
-          name: 'Sweet Potato Fries',
-          description: 'Crispy sweet potato fries with dipping sauce',
-          price: 4.99,
-          category: 'Sides'
-        },
-        {
-          id: 204,
-          name: 'Chocolate Milkshake',
-          description: 'Creamy chocolate milkshake',
-          price: 5.99,
-          category: 'Drinks'
-        }
-      ]
-    },
-    {
-      id: 3,
-      name: 'Sushi Palace',
-      description: 'Fresh Japanese sushi and sashimi',
-      imageUrl: '/images/sushi-restaurant.jpg',
-      menuItems: [
-        {
-          id: 301,
-          name: 'California Roll',
-          description: 'Crab, avocado, and cucumber',
-          price: 8.99,
-          category: 'Sushi Rolls'
-        },
-        {
-          id: 302,
-          name: 'Salmon Nigiri',
-          description: 'Fresh salmon over pressed rice',
-          price: 6.99,
-          category: 'Nigiri'
-        },
-        {
-          id: 303,
-          name: 'Miso Soup',
-          description: 'Traditional Japanese soybean soup',
-          price: 3.99,
-          category: 'Soups'
-        },
-        {
-          id: 304,
-          name: 'Green Tea Ice Cream',
-          description: 'Japanese-style green tea flavored ice cream',
-          price: 5.99,
-          category: 'Desserts'
-        }
-      ]
-    }
-  ];
+  // const restaurants: Restaurant[] = [
+  //   {
+  //     id: 1,
+  //     name: 'Italian Bistro',
+  //     description: 'Authentic Italian cuisine with homemade pasta',
+  //     imageUrl: '/images/italian-restaurant.jpg',
+  //     menuItems: [
+  //       {
+  //         id: 101,
+  //         name: 'Margherita Pizza',
+  //         description: 'Tomato sauce, mozzarella, and basil',
+  //         price: 12.99,
+  //         category: 'Pizza'
+  //       },
+  //       {
+  //         id: 102,
+  //         name: 'Spaghetti Carbonara',
+  //         description: 'Pasta with eggs, cheese, pancetta, and pepper',
+  //         price: 14.99,
+  //         category: 'Pasta'
+  //       },
+  //       {
+  //         id: 103,
+  //         name: 'Tiramisu',
+  //         description: 'Classic Italian dessert with coffee flavor',
+  //         price: 7.99,
+  //         category: 'Desserts'
+  //       },
+  //       {
+  //         id: 104,
+  //         name: 'Bruschetta',
+  //         description: 'Toasted bread topped with tomatoes and garlic',
+  //         price: 6.99,
+  //         category: 'Appetizers'
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Burger Joint',
+  //     description: 'Gourmet burgers and craft beers',
+  //     imageUrl: '/images/burger-restaurant.jpg',
+  //     menuItems: [
+  //       {
+  //         id: 201,
+  //         name: 'Classic Cheeseburger',
+  //         description: 'Beef patty with cheese, lettuce, and special sauce',
+  //         price: 9.99,
+  //         category: 'Burgers'
+  //       },
+  //       {
+  //         id: 202,
+  //         name: 'Bacon Burger',
+  //         description: 'Beef patty with bacon and cheddar cheese',
+  //         price: 11.99,
+  //         category: 'Burgers'
+  //       },
+  //       {
+  //         id: 203,
+  //         name: 'Sweet Potato Fries',
+  //         description: 'Crispy sweet potato fries with dipping sauce',
+  //         price: 4.99,
+  //         category: 'Sides'
+  //       },
+  //       {
+  //         id: 204,
+  //         name: 'Chocolate Milkshake',
+  //         description: 'Creamy chocolate milkshake',
+  //         price: 5.99,
+  //         category: 'Drinks'
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Sushi Palace',
+  //     description: 'Fresh Japanese sushi and sashimi',
+  //     imageUrl: '/images/sushi-restaurant.jpg',
+  //     menuItems: [
+  //       {
+  //         id: 301,
+  //         name: 'California Roll',
+  //         description: 'Crab, avocado, and cucumber',
+  //         price: 8.99,
+  //         category: 'Sushi Rolls'
+  //       },
+  //       {
+  //         id: 302,
+  //         name: 'Salmon Nigiri',
+  //         description: 'Fresh salmon over pressed rice',
+  //         price: 6.99,
+  //         category: 'Nigiri'
+  //       },
+  //       {
+  //         id: 303,
+  //         name: 'Miso Soup',
+  //         description: 'Traditional Japanese soybean soup',
+  //         price: 3.99,
+  //         category: 'Soups'
+  //       },
+  //       {
+  //         id: 304,
+  //         name: 'Green Tea Ice Cream',
+  //         description: 'Japanese-style green tea flavored ice cream',
+  //         price: 5.99,
+  //         category: 'Desserts'
+  //       }
+  //     ]
+  //   }
+  // ];
 
   useEffect(() => {
-    const restaurantId = Number(params.id);
-    const foundRestaurant = restaurants.find(r => r.id === restaurantId);
-    setRestaurant(foundRestaurant || null);
-    setLoading(false);
-  }, [params.id]);
+    const fetchRestaurants = async () => {
+      try {
+        const response = await apiRequest('/restaurant', 'GET');
+        if (response.data) {
+          response.data.data.forEach((r: any) => {
+            if (!r.restaurant_id || !r.restaurant_name) {
+              
+            }
+            else if (!uniqueRestaurantsMap.has(r.restaurant_id)) {
+              uniqueRestaurantsMap.set(r.restaurant_id, {
+                id: r.restaurant_id,
+                name: r.restaurant_name || 'Unnamed Restaurant',
+                description: r.description || 'No description available',
+                imageUrl: r.image_reference || '/restaurant-placeholder.jpg',
+                cuisine: r.cuisine_type,
+                isOpen: r.is_open,
+                rating: r.average_rating
+              });
+            }
+          });
+          const formattedRestaurants = Array.from(uniqueRestaurantsMap.values());
+          setRestaurants(formattedRestaurants);
+        }
+      } catch (error) {
+        console.error('Error fetching restaurants:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
+  
+  useEffect(() => {
+    const fetchMenuForRestaurant = async () => {
+      if (!params.id || restaurants.length === 0) return;
+
+      const foundRestaurant = restaurants.find(r => r.id === params.id);
+      if (!foundRestaurant) {
+        setRestaurant(null);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await apiRequest('/menu', 'GET');
+        if (response.data && Array.isArray(response.data.data)) {
+          let menuItems = response.data.data
+            .filter((item: any) => item.restaurantId === params.id)
+            .map((item: any) => ({
+              id: item.menuId,
+              name: item.name,
+              description: item.description,
+              price: item.price,
+              imageUrl: item.imageUrl,
+              category: 'food'
+            }));
+          if (menuItems.length == 0) {
+            menuItems = [
+              {
+                id: 101,
+                name: 'Margherita Pizza',
+                description: 'Tomato sauce, mozzarella, and basil',
+                price: 12.99,
+                category: 'Pizza'
+              },
+              {
+                id: 102,
+                name: 'Spaghetti Carbonara',
+                description: 'Pasta with eggs, cheese, pancetta, and pepper',
+                price: 14.99,
+                category: 'Pasta'
+              }
+            ]
+
+          }
+          foundRestaurant.menuItems = menuItems;
+          setRestaurant(foundRestaurant);
+        } else {
+          setRestaurant({ ...foundRestaurant, menuItems: [] });
+        }
+      } catch (error) {
+        console.error('Error fetching menu items:', error);
+        setRestaurant({ ...foundRestaurant, menuItems: [] });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMenuForRestaurant();
+  }, [restaurants, params.id]);
+
 
   const handleAddToCart = (menuItem: MenuItem) => {
     // Check if cart has items from a different restaurant

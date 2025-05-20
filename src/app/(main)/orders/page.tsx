@@ -11,22 +11,30 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
 
   useEffect(() => {
-      const fetchOrders = async () => {
-        try {
-          const orderResponse = await apiRequest(`/order/user/${userId}`, 'GET');
-          setOrders(orderResponse.data.data.orders);
-          console.log('Orders fetched successfully: ', orders);
-        } catch (error) {
-          console.error('Error saving order and payment: ', error);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      if (userId) {
-        fetchOrders();
+    let intervalId: NodeJS.Timeout;
+
+    const fetchOrders = async () => {
+      console.log('Fetching orders...');
+      try {
+        const orderResponse = await apiRequest(`/order/customer/${userId}`, 'GET');
+        setOrders(orderResponse.data.data.orders);
+        console.log('Orders fetched successfully: ', orderResponse.data.data.orders);
+      } catch (error) {
+        console.error('Error saving order and payment: ', error);
+      } finally {
+        setLoading(false);
       }
-    }, [userId]);
+    };
+
+    if (userId) {
+      fetchOrders();
+      intervalId = setInterval(fetchOrders, 0.1 * 60 * 1000); // 1 minutes
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [userId]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -66,6 +74,7 @@ export default function OrdersPage() {
                 <div className="mb-3 sm:mb-0">
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Order #{order.orderId}</h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Delivery ID: {order.deliveryId}...</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Restaurant ID: {order.restaurantId}...</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
@@ -74,7 +83,7 @@ export default function OrdersPage() {
                   {order.status === 'OUT_FOR_DELIVERY' && (
                     <button
                       className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 hover:bg-green-200 transition-colors"
-                      onClick={() => window.location.href = '/track-order'}
+                      onClick={() => window.location.href = `/track-order/${order.deliveryId}/${order.restaurantId}`}
                     >
                       Track Order
                     </button>
