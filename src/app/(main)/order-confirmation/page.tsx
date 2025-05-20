@@ -53,11 +53,16 @@ export default function OrderConfirmationPage() {
           "customerId": order.data.customerId,
           "amount": order.data.totalPrice,
           "paymentMethod": "Stripe",
-          "status": "COMPLETED",
-          "transactionId": transactionId?.toString() + '_' + order.data.orderId,
+          // "status": "COMPLETED",
+          // "transactionId": transactionId?.toString() + '_' + order.data.orderId,
         };
         const paymentResponse = await apiRequest('/payment', 'POST', paymentPayLoad);
         const paymentData = paymentResponse.data as any;
+        // update payment status
+        const paymentUpdateResponse = await apiRequest('/payment/update/status', 'POST', {
+          "transactionId": paymentData.data.transactionId,
+          "status": "COMPLETED"
+        });
         console.log('Payment saved successfully: ', paymentData);
       } catch (error) {
         console.error('Error saving order and payment: ', error);

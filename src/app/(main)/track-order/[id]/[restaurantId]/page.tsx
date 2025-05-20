@@ -27,10 +27,20 @@ export default function OrderPage() {
           lng: restaurant.data.data.location.longitude,
         });
 
-        // setCustomerCoords({
-        //   lat: restaurant.data.data.location.latitude,
-        //   lng: restaurant.data.data.location.longitude,
-        // });
+         if (!navigator.geolocation) {
+            console.error('Geolocation is not supported by your browser.');
+            return;
+          }
+
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              setCustomerCoords({ lat: latitude, lng: longitude });
+            },
+            (err) => {
+              console.error('Unable to retrieve your location. ' + err.message);
+            }
+          );
 
       } catch (error) {
         console.error('Error saving order and payment: ', error);
