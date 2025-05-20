@@ -55,7 +55,7 @@ export default function Checkout({ amount, address }: { amount: number; address:
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `http://localhost:3000/order-confirmation?amount=${amount}&address=${address}`,
+        return_url: `http://localhost:3001/order-confirmation?amount=${amount}&address=${address}`,
       },
     });
 
