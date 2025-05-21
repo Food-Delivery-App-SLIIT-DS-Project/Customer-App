@@ -19,7 +19,7 @@ export default function HomePage() {
         const response = await apiRequest('/restaurant', 'GET');
         if (response.data) {
           response.data.data.forEach((r: any) => {
-            if (!r.restaurant_id || !r.restaurant_name) {
+            if (!r.restaurant_id || !r.restaurant_name || !r.is_verified) {
               
             }
             else if (!uniqueRestaurantsMap.has(r.restaurant_id)) {
