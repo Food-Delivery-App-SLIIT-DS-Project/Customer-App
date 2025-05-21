@@ -30,7 +30,7 @@ export default function HomePage() {
                 imageUrl: r.image_reference || '/restaurant-placeholder.jpg',
                 cuisine: r.cuisine_type,
                 isOpen: r.is_open,
-                rating: r.average_rating
+                rating: r.number_of_ratings
               });
             }
           });

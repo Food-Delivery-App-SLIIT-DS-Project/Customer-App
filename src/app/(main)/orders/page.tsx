@@ -72,7 +72,7 @@ export default function OrdersPage() {
             <div className="p-5 border-b border-gray-200 dark:border-gray-700">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <div className="mb-3 sm:mb-0">
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Order #{order.orderId}</h2>
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Order ID: {order.orderId}</h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Delivery ID: {order.deliveryId}...</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Restaurant ID: {order.restaurantId}...</p>
                 </div>
@@ -99,7 +99,7 @@ export default function OrdersPage() {
                   <li key={index} className="py-3 flex justify-between">
                     <div className="flex items-center">
                       <span className="text-gray-600 dark:text-gray-400">{item.quantity} ×</span>
-                      <span className="ml-2 font-medium text-gray-800 dark:text-gray-200">Menu Item (ID: {item.menuId}...)</span>
+                      <span className="ml-2 font-medium text-gray-800 dark:text-gray-200">Menu Item ID: {item.menuId}...</span>
                     </div>
                   </li>
                 ))}

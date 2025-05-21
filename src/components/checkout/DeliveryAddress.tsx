@@ -115,12 +115,12 @@ export default function DeliveryAddress({
         </GoogleMap>
       </LoadScript>
 
-      <p className="text-sm text-gray-600">
+      {/* <p className="text-sm text-gray-600">
         <strong>Selected Address:</strong> {address || 'No address selected yet.'}
       </p>
       <p className="text-sm text-blue-600">
         <strong>Lat:</strong> {position.lat.toFixed(6)} | <strong>Lng:</strong> {position.lng.toFixed(6)}
-      </p>
+      </p> */}
     </div>
   );
 }

@@ -9,9 +9,9 @@ export default function CartSummary() {
     (total, item) => total + item.price * item.quantity,
     0
   );
-  const deliveryFee = subtotal > 0 ? 2.99 : 0; 
+  const deliveryFee = subtotal > 0 ? 200.00 : 0; 
   const tax = subtotal * 0.1;
-  const total = subtotal + deliveryFee + tax;
+  const total = subtotal + deliveryFee;
   const inCheckout = true;
 
   return (
@@ -37,10 +37,10 @@ export default function CartSummary() {
           <span>Rs.{deliveryFee.toFixed(2)}</span>
         </div>
         
-        <div className="flex justify-between">
+        {/* <div className="flex justify-between">
           <span className="text-gray-600">Tax (10%)</span>
           <span>Rs.{tax.toFixed(2)}</span>
-        </div>
+        </div> */}
       </div>
       
       <div className="border-t border-gray-200 pt-4 mb-6">

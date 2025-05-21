@@ -18,7 +18,7 @@ export default function CartPage() {
   };
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = subtotal > 0 ? 5.99 : 0; // Example delivery fee
+  const deliveryFee = subtotal > 0 ? 200.00 : 0;
   const total = subtotal + deliveryFee;
 
   return (
@@ -66,7 +66,7 @@ export default function CartPage() {
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <div className="flex items-start">
-                          <div className="bg-gray-100 rounded-lg w-16 h-16 flex-shrink-0"></div>
+                          <div className="bg-gray-100 rounded-lg w-2 h-16 flex-shrink-0"></div>
                           <div className="ml-4">
                             <h3 className="font-medium text-gray-900">{item.name}</h3>
                             <p className="text-gray-500 text-sm mt-1">{item.description}</p>
@@ -130,14 +130,14 @@ export default function CartPage() {
                     <span className="text-gray-600">Delivery Fee</span>
                     <span className="font-medium">Rs.{deliveryFee.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span className="text-gray-600">Tax</span>
                     <span className="font-medium">Rs.{(subtotal * 0.05).toFixed(2)}</span>
-                  </div>
+                  </div> */}
                   
                   <div className="border-t border-gray-200 pt-3 mt-3 flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span className="text-indigo-600">Rs.{(subtotal + deliveryFee + (subtotal * 0.05)).toFixed(2)}</span>
+                    <span className="text-indigo-600">Rs.{(subtotal + deliveryFee).toFixed(2)}</span>
                   </div>
                 </div>
                 

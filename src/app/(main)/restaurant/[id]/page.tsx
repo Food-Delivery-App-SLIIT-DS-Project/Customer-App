@@ -313,13 +313,13 @@ export default function RestaurantPage() {
                 </div>
                 <div className="flex items-center bg-gray-100 px-3 py-1 rounded-full">
                   <span className="text-yellow-500">★</span>
-                  <span className="ml-1 font-medium">4.5</span>
+                  <span className="ml-1 font-medium">{restaurant.rating}</span>
                 </div>
               </div>
               
               <div className="flex justify-between items-center pt-4 border-t border-gray-100">
                 <div className="text-sm text-gray-500">
-                  <span>25-35 min • $$</span>
+                  {/* <span>25-35 min • $$</span> */}
                 </div>
                 <Link 
                   href="/cart" 
